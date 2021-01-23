@@ -108,7 +108,7 @@ def get_bio():
     page = soup.find_all('p')
     search_words = set(["research", "interest"])
     blob = TextBlob(page[3].text + page[4].text + page[5].text)
-    if (blob.sentences[0].find("research") == -1 or blob.sentences[1].find("research") == -1 or blob.sentences[2].find("research") == -1):
+    if (blob.sentences[0].find("research") == -1 and blob.sentences[1].find("research") == -1 and blob.sentences[2].find("research") == -1):
         return [blob.sentences[0].string]
     else:
         matches = [str(s) for s in blob.sentences if search_words & set(s.words)]
@@ -116,11 +116,14 @@ def get_bio():
             result = []
             for match in matches:
                 result.append(extract_keywords(nlp, match))
-                tagged_sentence = nltk.tag.pos_tag(match.split())
-                for word in tagged_sentence:
-                    if(word[1] == 'PRP' or  word[1] == 'PRP$'):
-                        match = match.replace(word[0], get_name())
-                        return [match]
+                #tagged_sentence = nltk.tag.pos_tag(match.split())
+                # for word in tagged_sentence:
+                #     if(word[1] == 'PRP' or  word[1] == 'PRP$'):
+                #         match = match.replace(word[0], get_name() + "'s")
+                #         # if(word[1] == 'PRP$'):
+                #         #     match = match.replace(word[0], get_name() + "'s")
+                #         if(match.count(get_name())<2):
+                #             return [match]
             return matches
 
 def make_data():
@@ -183,7 +186,7 @@ db = firestore.client()
 # Research areas(in the form of a list)
 # External link to website (if they have one)
 # Publications: [[title, link to publication], [title2, link2], [title3]]
-def uploadData(fullName, education, researchAreas, extLink, publications):
+def uploadData(fullName, bio, education, researchAreas, extLink, publications):
     currentRef = db.collection(u'profdata').document(u'' + fullName + '')
 
     # Converts 2D array of publications to dictionary
@@ -198,6 +201,7 @@ def uploadData(fullName, education, researchAreas, extLink, publications):
     info = {
         u'fullName': fullName,
         u'education': education,
+        u'bio': bio,
         u'researchArea': researchAreas,
         u'externalLinks': extLink,
         u'publications': pubMap
@@ -216,12 +220,8 @@ def process(s):
   s = " ".join([porter.stem(word) for word in nltk.tokenize.word_tokenize(s)])
   return s
 if __name__ == "__main__":
-    ps = PorterStemmer()
-    nlp = spacy.load('en_vectors_web_lg')
-    doc1 = nlp("system")
-    doc2 = nlp("Systems")
-    print(doc1.similarity(doc2))
-    prof_l = ["https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/bxd.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/akate.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
+    url = ["https://www.cs.purdue.edu/people/faculty/spa.html"]
+    prof_l = ["https://www.cs.purdue.edu/people/faculty/ninghui.html","https://www.cs.purdue.edu/people/faculty/mingyin.html","https://www.cs.purdue.edu/people/faculty/dxu.html","https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/akate.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
     for url in prof_l:
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -229,10 +229,11 @@ if __name__ == "__main__":
         # name, bio, education, search_q
         name = make_data()[0]
         bio = make_data()[1]
+        print(bio)
         edu = make_data()[2]
         search_q = make_data()[3]
         n_l = []
-        for word in search_q:
-            n_l.append(process(word))
-        uploadData(name, bio, n_l, [], [])
+        # for word in search_q:
+        #     n_l.append(process(word))
+        # uploadData(name, bio, edu, n_l, [], [])
 
