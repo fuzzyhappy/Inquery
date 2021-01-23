@@ -12,13 +12,6 @@ db = firestore.client()
 query_ref = db.collection(u'profdata')
 
 app = Flask(__name__)
-
-testData = { "bob" : {"contact" : "bob@lmao.com", "department" : "cs departmnet", "area" : "memes", "links" : "somelink.com"},
-"yeet" : {"contact" : "xd@lmao.com", "department" : "cs departmnet", "area" : "minecraft", "links" : "morelinks.com"},
-"name1" : {"contact" : "kjl@kjl.com", "department" : "cs departmnet", "area" : "data", "links" : "morelinksssss.com"},
-"babooshka" : {"contact" : "pp@pp.com", "department" : "cs departmnet", "area" : "memes", "links" : "virus.com"},
-"nam2" : {"contact" : "dffds@dsf.com", "department" : "cs departmnet", "area" : "minecraft", "links" : "cancer.gov"}
-}
     
 @app.route('/', methods = ['GET'])
 def default():

@@ -2,7 +2,7 @@
 <html>
   <head>
       <title>Search Engine</title>
-      <link href="static/styles.css?v=1.0.8-test24" rel="stylesheet" type="text/css"/>
+      <link href="static/styles.css?v=1.0.9-test2" rel="stylesheet" type="text/css"/>
   </head>
 
 <body>
@@ -13,17 +13,19 @@
     </div>
   </form>
 
-  {% for name in data %}
-            
-    <div class='entry'>        
-        <span class='fullName'> Name: {{ data[name].fullName }} </span> <br>
-        <span class='education'> Education: {{ data[name].education }} </span><br>
-        <span class='publications'> Publications: {{ data[name].publications }} </span><br>
-        <span class='researchArea'> Areas of research: {{ data[name].researchArea }}</span><br>
-        <span class='externalLinks'> Links: <a href="{{ data[name].externalLinks }}" target="_blank">{{ data[name].externalLinks }}</a></span>
-    </div>
-    <br>
-  {% endfor %}  
+  
+  <ol>
+    {% for name in data %}              
+      <li>        
+          <h4>{{ data[name].fullName }}</h4>
+          <span class='education'> Education: {{ data[name].education }} </span><br>
+          <span class='publications'> Publications: {{ data[name].publications }} </span><br>
+          <span class='researchArea'> Areas of research: {{ data[name].researchArea }}</span><br>
+          <span class='externalLinks'> Links: <a href="{{ data[name].externalLinks }}" target="_blank">{{ data[name].externalLinks }}</a></span>
+      </li>
+      <br>
+    {% endfor %}  
+  </ol>
 </body>
 
 </html>
