@@ -16,6 +16,7 @@ db = firestore.client()
 query_ref = db.collection(u'profdata')
 
 app = Flask(__name__)
+
 def process(s):
   # converts to lowercase
   s = s.lower()
@@ -35,7 +36,7 @@ def retrieve():
     returnData = {}
     docs = db.collection(u'profdata').stream()
     for doc in docs:
-        if (u'researchArea' in doc.to_dict() and process(request.form[u'area']), doc.to_dict()[u'researchArea']):
+        if (u'researchArea' in doc.to_dict() and process(request.form[u'area']) in doc.to_dict()[u'researchArea']):
             print(f'{doc.id} => {doc.to_dict()}')
             returnData[doc.id] = doc.to_dict()
     return render_template('index.html', data = returnData)
