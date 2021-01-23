@@ -7,6 +7,8 @@ from textblob import TextBlob
 from string import punctuation
 from itertools import chain
 import nltk
+from nltk.stem import PorterStemmer
+from nltk.tokenize import word_tokenize
 #[https://www.cs.purdue.edu/people/faculty/apothen.html
 #https://www.cs.purdue.edu/people/faculty/pfonseca.html
 #https://www.cs.purdue.edu/people/faculty/mja.html
@@ -202,22 +204,35 @@ def uploadData(fullName, education, researchAreas, extLink, publications):
     }
     # print(info);
     currentRef.set(info);
+from nltk.stem import PorterStemmer
+import nltk
+def process(s):
+  # converts to lowercase
+  s = s.lower()
+  # removes punctuation
+  s = re.sub(r'[^\w\s]', '', s)
+  # converts words to root words (stemming)
+  porter = PorterStemmer()
+  s = " ".join([porter.stem(word) for word in nltk.tokenize.word_tokenize(s)])
+  return s
 if __name__ == "__main__":
+    ps = PorterStemmer()
     nlp = spacy.load('en_vectors_web_lg')
     doc1 = nlp("system")
     doc2 = nlp("Systems")
     print(doc1.similarity(doc2))
-    # url = 'https://www.cs.purdue.edu/people/faculty/fahmy.html'
-    # prof_l = ["https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/bxd.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/akate.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
-    # for url in prof_l:
-    #     page = requests.get(url)
-    #     soup = BeautifulSoup(page.content, 'html.parser')
-    #     nlp = spacy.load("en_core_web_sm")
-    #     # name, bio, education, search_q
-    #     name = make_data()[0]
-    #     bio = make_data()[1]
-    #     edu = make_data()[2]
-    #     search_q = make_data()[3]
-    #
-    #     uploadData(name, bio, search_q, [], [])
+    prof_l = ["https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/bxd.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/akate.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
+    for url in prof_l:
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        nlp = spacy.load("en_core_web_sm")
+        # name, bio, education, search_q
+        name = make_data()[0]
+        bio = make_data()[1]
+        edu = make_data()[2]
+        search_q = make_data()[3]
+        n_l = []
+        for word in search_q:
+            n_l.append(process(word))
+        uploadData(name, bio, n_l, [], [])
 
