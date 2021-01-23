@@ -6,10 +6,22 @@
   </head>
 
 <body>
-  <form action="/add" method="post">
-    <input name="name" type="text" placeholder="Search a query" />
+  <form action="/" method="post">
+    <input name="area" type="text" placeholder="Search an area of interest"/>
     <input type="submit" />
   </form>
+
+  {% for name in data %}
+            
+    <div class='entry'>        
+        <span class='name'> Name: {{ name }} </span> <br>
+        <span class='contact'> Contact: {{ data[name].contact }} </span><br>
+        <span class='department'> Department: {{ data[name].department }} </span><br>
+        <span class='area'> Area of research: {{ data[name].area }}</span><br>
+        <span class='links'> Links: <a href="{{ data[name].links }}" target="_blank">{{ data[name].links }}</a></span>
+    </div>
+    <br>
+  {% endfor %}  
 </body>
 
 </html>
