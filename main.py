@@ -1,18 +1,21 @@
 import json
 import re
-
 from bs4 import BeautifulSoup
 import requests
 import spacy
 from textblob import TextBlob
 from string import punctuation
 from itertools import chain
+import nltk
+#https://www.cs.purdue.edu/people/faculty/apothen.html
+#https://www.cs.purdue.edu/people/faculty/pfonseca.html
+#https://www.cs.purdue.edu/people/faculty/mja.html
+#https://www.cs.purdue.edu/people/faculty/aref.html
+#https://www.cs.purdue.edu/people/faculty/pdrineas.html
 url = 'https://www.cs.purdue.edu/people/faculty/apothen.html'
 page = requests.get(url)
 soup = BeautifulSoup(page.content, 'html.parser')
-import subprocess
 nlp = spacy.load("en_core_web_sm")
-#print(soup.prettify())
 
 def extract_keywords(nlp, sequence, special_tags: list = None):
     result = []
@@ -55,7 +58,8 @@ def get_education():
 def get_research_spec():
     page = soup.find_all('p')
     search_words = set(["research"])
-    blob = TextBlob(page[3].text)
+    blob = TextBlob(page[3].text + page[4].text + page[5].text)
+
     matches = [str(s) for s in blob.sentences if search_words & set(s.words)]
     if len(matches)>0:
         # load the small english language model,
@@ -92,33 +96,47 @@ def get_website():
 
     return links
 
-if __name__ == "__main__":
-    o = get_research_spec()
-    l = list(chain.from_iterable(o))
-
-    # research_l = []
-    # item = get_research_spec()
-    # for um in item:
-    #     for elem in um:
-    #         research_l.append(item)
-
-    # lists = get_research_spec()
-    # for um in lists:
-    #     for elem in um:
-    #        print(elem)
-
-    # print(list)
-    # # print(get_areas())
-    # get_publications()
-    # # print(get_research())
-    # print(get_name())
-    # print(get_education())
-    # list = get_research_spec() + get_areas()
-    # print(list)
-    print(get_website())
-    if(get_research_spec() is not None):
-        final_list = set(l + get_areas() + get_research())
+def get_bio():
+    page = soup.find_all('p')
+    search_words = set(["research"])
+    blob = TextBlob(page[3].text + page[4].text + page[5].text)
+    if (blob.sentences[0].find("research") == -1 and blob.sentences[1].find("research") == -1):
+        return [blob.sentences[0]]
     else:
-        final_list = set(get_areas() + get_research())
-    print(final_list)
+        matches = [str(s) for s in blob.sentences if search_words & set(s.words)]
+        if len(matches) > 0:
+            result = []
+            for match in matches:
+                result.append(extract_keywords(nlp, match))
+                tagged_sentence = nltk.tag.pos_tag(match.split())
+                for word in tagged_sentence:
+                    if(word[1] == 'PRP' or  word[1] == 'PRP$'):
+                        match = match.replace(word[0], get_name())
+                        return [match]
+            return matches
 
+def make_data():
+    name = get_name()
+    try:
+        bio = get_bio()[0]
+    except:
+        bio = []
+    education = get_education()
+    r_s = get_research()
+    r_l = list(chain.from_iterable(r_s))
+    try:
+        if (get_research_spec()[0] is not None):
+            final_list = set(r_l + get_areas() + get_research())
+        else:
+            final_list = set(get_areas() + get_research())
+    except:
+        final_list = []
+    parse_fin_list = []
+    for elem in final_list:
+        if len(elem) > 5:
+            parse_fin_list.append(elem)
+    search_q = parse_fin_list
+    return name, bio, education, search_q
+
+if __name__ == "__main__":
+    print(make_data())
