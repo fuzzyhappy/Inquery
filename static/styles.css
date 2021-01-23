@@ -37,12 +37,12 @@ body {
 
 }
 
-.searchBox:hover > .searchInput {
+.searchBox:hover > .searchInput, .searchInput:focus {
   width: 300px;
 }
 
-.searchInput:focus {
-  width: 300px;
+.searchBox:hover > .searchButton, .searchInput:focus + .searchButton {
+  opacity: 0;
 }
 
 
@@ -56,7 +56,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: 0.4s;
 }
 
 .searchInput {
