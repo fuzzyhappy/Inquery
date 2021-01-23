@@ -1,18 +1,27 @@
 import json
 import re
-
 from bs4 import BeautifulSoup
 import requests
 import spacy
 from textblob import TextBlob
 from string import punctuation
 from itertools import chain
-url = 'https://www.cs.purdue.edu/people/faculty/apothen.html'
-page = requests.get(url)
-soup = BeautifulSoup(page.content, 'html.parser')
-import subprocess
-nlp = spacy.load("en_core_web_sm")
-#print(soup.prettify())
+import nltk
+#[https://www.cs.purdue.edu/people/faculty/apothen.html
+#https://www.cs.purdue.edu/people/faculty/pfonseca.html
+#https://www.cs.purdue.edu/people/faculty/mja.html
+#https://www.cs.purdue.edu/people/faculty/aref.html
+#https://www.cs.purdue.edu/people/faculty/pdrineas.html
+#https://www.cs.purdue.edu/people/faculty/bxd.html
+#https://www.cs.purdue.edu/people/faculty/cmh.html
+#https://www.cs.purdue.edu/people/faculty/bxd.html
+#https://www.cs.purdue.edu/people/faculty/lintan.html
+#https://www.cs.purdue.edu/people/faculty/xyzhang.html
+#https://www.cs.purdue.edu/people/faculty/yunglu.html
+#https://www.cs.purdue.edu/people/faculty/clifton.html
+#https://www.cs.purdue.edu/people/faculty/akate.html
+#https://www.cs.purdue.edu/people/faculty/fahmy.htm
+
 
 def extract_keywords(nlp, sequence, special_tags: list = None):
     result = []
@@ -55,7 +64,8 @@ def get_education():
 def get_research_spec():
     page = soup.find_all('p')
     search_words = set(["research"])
-    blob = TextBlob(page[3].text)
+    blob = TextBlob(page[3].text + page[4].text + page[5].text)
+
     matches = [str(s) for s in blob.sentences if search_words & set(s.words)]
     if len(matches)>0:
         # load the small english language model,
@@ -92,33 +102,122 @@ def get_website():
 
     return links
 
-if __name__ == "__main__":
-    o = get_research_spec()
-    l = list(chain.from_iterable(o))
-
-    # research_l = []
-    # item = get_research_spec()
-    # for um in item:
-    #     for elem in um:
-    #         research_l.append(item)
-
-    # lists = get_research_spec()
-    # for um in lists:
-    #     for elem in um:
-    #        print(elem)
-
-    # print(list)
-    # # print(get_areas())
-    # get_publications()
-    # # print(get_research())
-    # print(get_name())
-    # print(get_education())
-    # list = get_research_spec() + get_areas()
-    # print(list)
-    print(get_website())
-    if(get_research_spec() is not None):
-        final_list = set(l + get_areas() + get_research())
+def get_bio():
+    page = soup.find_all('p')
+    search_words = set(["research", "interest"])
+    blob = TextBlob(page[3].text + page[4].text + page[5].text)
+    if (blob.sentences[0].find("research") == -1 or blob.sentences[1].find("research") == -1 or blob.sentences[2].find("research") == -1):
+        return [blob.sentences[0].string]
     else:
-        final_list = set(get_areas() + get_research())
-    print(final_list)
+        matches = [str(s) for s in blob.sentences if search_words & set(s.words)]
+        if len(matches) > 0:
+            result = []
+            for match in matches:
+                result.append(extract_keywords(nlp, match))
+                tagged_sentence = nltk.tag.pos_tag(match.split())
+                for word in tagged_sentence:
+                    if(word[1] == 'PRP' or  word[1] == 'PRP$'):
+                        match = match.replace(word[0], get_name())
+                        return [match]
+            return matches
+
+def make_data():
+    name = get_name()
+    try:
+        bio = get_bio()[0]
+    except:
+        bio = []
+    education = get_education()
+    r_s = get_research()
+    r_l = list(chain.from_iterable(r_s))
+    try:
+        if (get_research_spec()[0] is not None):
+            final_list = set(r_l + get_areas() + get_research())
+        else:
+            final_list = set(get_areas() + get_research())
+    except:
+        final_list = []
+    parse_fin_list = []
+    for elem in final_list:
+        if len(elem) > 5:
+            parse_fin_list.append(elem)
+    search_q = parse_fin_list
+    return name, bio, education, search_q
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+# Initalizes service account if one does not already exist
+try:
+    cred = credentials.Certificate('/Users/shellyschwartz/PycharmProjects/boilerMake/BoilerMake8Build/boilermake-8-project-firebase-adminsdk-n45vg-c326d22181.json')
+    firebase_admin.initialize_app(cred)
+except ValueError:
+    pass
+
+db = firestore.client()
+
+
+# profRef = db.collection(u'profdata')
+
+## Old format, not currently used
+# def formatData(firstName, lastName, dept, email, researchAreas, links):
+#     out = {
+#     u'first_name': u''+ firstName +'',
+#     u'last_name': u''+ lastName +'',
+#     u'department': u''+ dept +'',
+#     u'email': u''+ email +'',
+#     u'area of research': researchAreas,
+#     u'external links': links
+#     }
+#     #print(out)
+#     return out
+
+
+## Accepted data
+# Full Name
+# Education(in the form of a list)
+# Research areas(in the form of a list)
+# External link to website (if they have one)
+# Publications: [[title, link to publication], [title2, link2], [title3]]
+def uploadData(fullName, education, researchAreas, extLink, publications):
+    currentRef = db.collection(u'profdata').document(u'' + fullName + '')
+
+    # Converts 2D array of publications to dictionary
+    pubTitles = [None] * len(publications);
+    pubLinks = [None] * len(publications);
+    for i in range(len(publications)):
+        pubTitles[i] = publications[i][0];
+        pubLinks[i] = publications[i][1];
+    pubMap = dict(zip(pubTitles, pubLinks));
+    # print(pubMap);
+
+    info = {
+        u'fullName': fullName,
+        u'education': education,
+        u'researchArea': researchAreas,
+        u'externalLinks': extLink,
+        u'publications': pubMap
+    }
+    # print(info);
+    currentRef.set(info);
+if __name__ == "__main__":
+    nlp = spacy.load('en_vectors_web_lg')
+    doc1 = nlp("system")
+    doc2 = nlp("Systems")
+    print(doc1.similarity(doc2))
+    # url = 'https://www.cs.purdue.edu/people/faculty/fahmy.html'
+    # prof_l = ["https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/bxd.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/akate.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
+    # for url in prof_l:
+    #     page = requests.get(url)
+    #     soup = BeautifulSoup(page.content, 'html.parser')
+    #     nlp = spacy.load("en_core_web_sm")
+    #     # name, bio, education, search_q
+    #     name = make_data()[0]
+    #     bio = make_data()[1]
+    #     edu = make_data()[2]
+    #     search_q = make_data()[3]
+    #
+    #     uploadData(name, bio, search_q, [], [])
 
