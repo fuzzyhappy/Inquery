@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import spacy
 
 # Use a service account
 cred = credentials.Certificate('boilermake-8-project-firebase-adminsdk-n45vg-c326d22181.json')
@@ -19,7 +20,11 @@ testData = { "bob" : {"contact" : "bob@lmao.com", "department" : "cs departmnet"
 "babooshka" : {"contact" : "pp@pp.com", "department" : "cs departmnet", "area" : "memes", "links" : "virus.com"},
 "nam2" : {"contact" : "dffds@dsf.com", "department" : "cs departmnet", "area" : "minecraft", "links" : "cancer.gov"}
 }
-    
+def check_sim(word1, word2):
+    nlp = spacy.load('en_vectors_web_lg')
+    doc1 = nlp(word1)
+    doc2 = nlp(word2)
+    return doc1.similarity(doc2)
 @app.route('/', methods = ['GET'])
 def default():
     return render_template('index.html')
@@ -29,7 +34,7 @@ def retrieve():
     returnData = {}
     docs = db.collection(u'profdata').stream()
     for doc in docs:
-        if (u'researchArea' in doc.to_dict() and request.form[u'area'] in doc.to_dict()[u'researchArea']):
+        if (u'researchArea' in doc.to_dict() and request.form[u'area'], doc.to_dict()[u'researchArea']) >=.70):
             print(f'{doc.id} => {doc.to_dict()}')
             returnData[doc.id] = doc.to_dict()
     return render_template('index.html', data = returnData)
