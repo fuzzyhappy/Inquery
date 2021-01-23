@@ -20,21 +20,19 @@ testData = { "bob" : {"contact" : "bob@lmao.com", "department" : "cs departmnet"
 "nam2" : {"contact" : "dffds@dsf.com", "department" : "cs departmnet", "area" : "minecraft", "links" : "cancer.gov"}
 }
     
-
 @app.route('/', methods = ['GET'])
 def default():
     return render_template('index.html')
 
-
 @app.route('/', methods = ['POST'])
 def retrieve():
     returnData = {}
-    for name in testData:
-        if testData[name]["area"] == request.form['area']:
-            returnData[name] = testData[name]
+    docs = db.collection(u'profdata').stream()
+    for doc in docs:
+        if (u'researchArea' in doc.to_dict() and request.form[u'area'] in doc.to_dict()[u'researchArea']):
+            print(f'{doc.id} => {doc.to_dict()}')
+            returnData[doc.id] = doc.to_dict()
     return render_template('index.html', data = returnData)
-
-    
 
 @app.route('/add', methods = ['POST'])
 def add_name():
