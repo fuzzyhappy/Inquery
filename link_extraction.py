@@ -50,33 +50,40 @@ def getExternalLinks(site, logData=False):
     
     return links[jpgIndex+1:footerIndex]
 
+#Returns publications as a dictionary
 def getPublications():
+    titleArray = [None]
+    linkArray = [None]
     soupText = str(soup.body)
     startIndex = soupText.find("Selected Publications")
     if(startIndex != -1):
         #startIndex += 50
         endIndex = soupText.find("lastupdate")
         endIndex -= 26
-    targetText = soupText[startIndex : endIndex]
-    
-    #Remove html tags from text
-    targetText = targetText[targetText.find(">")+1:targetText.rfind("</div>")+6]
-    targetText = targetText.replace("<em>", "")
-    targetText = targetText.replace("</em>", "")
-    targetText = targetText.replace("<strong>", "")
-    targetText = targetText.replace("</strong>", "")
-    targetText = targetText.replace("<p>", "")
-    targetText = targetText.replace("</p>", "")
-    
-    titleIndices = findInstancesOfString(targetText,'<div style="margin-bottom: 1em;">')
-    #print(targetText[titleIndices[1]:targetText.find("</div>",titleIndices[1])])
-    
-    rawTitleArray = [None] * len(titleIndices)
-    for i in range(len(titleIndices)):
-        rawTitleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])]
-    
-    
-    return rawTitleArray
+        targetText = soupText[startIndex : endIndex]
+        
+        #Remove html tags from text
+        targetText = targetText[targetText.find(">")+1:targetText.rfind("</div>")+6]
+        targetText = targetText.replace("<em>", "")
+        targetText = targetText.replace("</em>", "")
+        targetText = targetText.replace("<strong>", "")
+        targetText = targetText.replace("</strong>", "")
+        targetText = targetText.replace("<p>", "")
+        targetText = targetText.replace("</p>", "")
+        
+        titleIndices = findInstancesOfString(targetText,'<div style="margin-bottom: 1em;">')
+        #print(targetText[titleIndices[1]:targetText.find("</div>",titleIndices[1])])
+        
+        titleArray = [None] * len(titleIndices)
+        linkArray = [None] * len(titleIndices)
+        
+        for i in range(len(titleIndices)):
+            titleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])]
+            titleArray[i] = titleArray[i][targetText.find(">"):] #Removes leading HTML tag
+            if(titleArray[i].find("href=") != -1): #If a link is found in the entry:
+                linkArray[i] = titleArray[i][titleArray[i].find('="')+2:titleArray[i].find('">')]
+            
+    return [titleArray, linkArray]
 
 
 def findInstancesOfString(string, target):
@@ -87,11 +94,10 @@ def findInstancesOfString(string, target):
         
     
 
-getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html")
-#getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html")
+## Misc debug lines
+#getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html") #Just publications
+#getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html") #Publications and links
+#getPageData("https://www.cs.purdue.edu/people/faculty/dgleich.html") #No publications
 #testSoup = getExternalLinks(True)
 #print(getPublications())
-result = getPublications()
-
-
-
+#result = getPublications()
