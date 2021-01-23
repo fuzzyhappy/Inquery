@@ -9,6 +9,7 @@
 
 from bs4 import BeautifulSoup
 import urllib.request
+import re
 
 html_page = None
 soup = None
@@ -53,7 +54,7 @@ def getPublications():
     soupText = str(soup.body)
     startIndex = soupText.find("Selected Publications")
     if(startIndex != -1):
-        startIndex += 50
+        #startIndex += 50
         endIndex = soupText.find("lastupdate")
         endIndex -= 26
     targetText = soupText[startIndex : endIndex]
@@ -66,13 +67,30 @@ def getPublications():
     targetText = targetText.replace("</strong>", "")
     targetText = targetText.replace("<p>", "")
     targetText = targetText.replace("</p>", "")
-    return targetText
+    
+    titleIndices = findInstancesOfString(targetText,'<div style="margin-bottom: 1em;">')
+    
+    rawTitleArray = [None] * len(titleIndices)
+    for i in range(len(titleIndices)):
+        rawTitleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",i)]
+    
+    
+    return rawTitleArray
+
+
+def findInstancesOfString(string, target):
+    results = []
+    for match in re.finditer(target, string):
+        results.append(match.start())
+    return results
+        
     
 
 getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html")
 #getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html")
 #testSoup = getExternalLinks(True)
-print(getPublications())
+#print(getPublications())
+result = getPublications()
 
 
 
