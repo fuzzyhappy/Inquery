@@ -1,3 +1,12 @@
+## List of professors https://www.cs.purdue.edu/research/
+## Common test pages
+# https://www.cs.purdue.edu/people/faculty/popescu.html
+# https://www.cs.purdue.edu/people/faculty/rego.html
+# https://www.cs.purdue.edu/people/faculty/apothen.html
+# https://www.cs.purdue.edu/people/faculty/apsomas.html
+# https://www.cs.purdue.edu/people/faculty/mingyin.html
+# https://www.cs.purdue.edu/people/faculty/dgleich.html (Issues with getting extLinks, no .jpg found?)
+
 from bs4 import BeautifulSoup
 import urllib.request
 
