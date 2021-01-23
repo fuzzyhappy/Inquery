@@ -3,12 +3,12 @@
 from firebase_admin import firestore
 
 ######################### Use a service account, only needs to be run once #################
-#cred = credentials.Certificate('')
+#cred = credentials.Certificate('insert path name')
 #firebase_admin.initialize_app(cred)
 #####################################owo#####################################################
 
 db = firestore.client()
-profRef = db.collection(u'profdata')
+#profRef = db.collection(u'profdata')
 
 ## Old format, not currently used
 # def formatData(firstName, lastName, dept, email, researchAreas, links):
@@ -33,14 +33,15 @@ profRef = db.collection(u'profdata')
 def uploadData(fullName, education, researchAreas, extLink, publications):
     currentRef = db.collection(u'profdata').document(u''+ fullName +'')
     
+    #Converts 2D array of publications to dictionary
     pubTitles = [None]*len(publications);
     pubLinks = [None]*len(publications);
     for i in range(len(publications)):
         pubTitles[i] = publications[i][0];
         pubLinks[i] = publications[i][1];
-        
     pubMap = dict(zip(pubTitles, pubLinks));
     #print(pubMap);
+    
     info = {
     u'fullName': u''+ fullName +'',
     u'education': u''+ education +'',
@@ -48,12 +49,10 @@ def uploadData(fullName, education, researchAreas, extLink, publications):
     u'external links': u''+ extLink +'',
     u'publications': pubMap
     }
-    #print(out)
-    
-    
-    currentRef.set(info)
-    #currentRef.set(pubMap)
+    #print(info);
+    currentRef.set(info);
 
+#Attempted query commands, often result in errors
 # def dispByName(names):
 #     results[i] = profRef.where(u'area of research', u'==', True).stream()
          
@@ -61,6 +60,7 @@ def uploadData(fullName, education, researchAreas, extLink, publications):
 #     results = profRef.where(u'area_of_research', u'array_contains', u''+ inputResearchArea +'').stream()
 #     return results
 
+## Misc test lines
 #currentRef = db.collection(u'profdata').document(u'pete')
 #currentRef.set(formatData("Purdue Pete", "Purdue University", ["Machine Learning", "Meme History"], "https://www.purdue.edu/"));
 
