@@ -7,6 +7,7 @@ from firebase_admin import firestore
 
 from nltk.stem import PorterStemmer
 import nltk
+nltk.download('punkt')
 # Use a service account
 cred = credentials.Certificate('boilermake-8-project-firebase-adminsdk-n45vg-c326d22181.json')
 firebase_admin.initialize_app(cred)
@@ -16,7 +17,7 @@ db = firestore.client()
 query_ref = db.collection(u'profdata')
 
 app = Flask(__name__)
-
+returnData = {}
 
 def process(s):
   # converts to lowercase
@@ -32,15 +33,19 @@ def process(s):
 def default():
     return render_template('index.html')
 
+@app.route('/results')
+def results():
+    return render_template('results.html', data = returnData);
+
 @app.route('/', methods = ['POST'])
-def retrieve():
-    returnData = {}
+def retrieve():    
+    returnData.clear()
     docs = db.collection(u'profdata').stream()
     for doc in docs:
         if (u'researchArea' in doc.to_dict() and process(request.form[u'area']) in doc.to_dict()[u'researchArea']):
             print(f'{doc.id} => {doc.to_dict()}')
             returnData[doc.id] = doc.to_dict()
-    return render_template('index.html', data = returnData)
+    return redirect('/results')
 
 if __name__ == '__main__':
     app.run(debug=True)

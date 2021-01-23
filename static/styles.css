@@ -70,7 +70,7 @@ body {
   width: 0px;
 }
 
-ol, li, span, h4 {
+/* ol, li, span, h4 {
   margin: 0;
 }
 
@@ -125,4 +125,4 @@ li::before {
     width: 25px;
     height: 25px;
     border: 2px solid #000;
-}
+} */

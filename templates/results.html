@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Search Results</title>
+      <link href="static/results_styles.css?v=1.0.1-test2" rel="stylesheet" type="text/css"/>
+  </head>
+
+<body>
+
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,900" rel="stylesheet">
+
+    <div class="container">
+    {% for name in data %}
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card card-1">
+            <h3>{{ data[name].fullName }}</h3>
+            <span class='education'> Bio: {{ data[name].education }} </span><br>
+            <span class='publications'> Publications: {{ data[name].publications }} </span><br>
+            <span class='researchArea'> Areas of research: {{ data[name].researchArea }}</span><br>
+            <span class='externalLinks'> Links: <a href="{{ data[name].externalLinks }}" target="_blank">{{ data[name].externalLinks }}</a></span>
+          </div>
+        </div>
+      </div>
+    {% endfor %} 
+    </div>
+</body>
+</html>
