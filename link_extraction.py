@@ -1,6 +1,6 @@
 ## List of professors https://www.cs.purdue.edu/research/
 ## Common test pages
-# https://www.cs.purdue.edu/people/faculty/popescu.html
+# https://www.cs.purdue.edu/people/faculty/popescu.html (Contains publications)
 # https://www.cs.purdue.edu/people/faculty/rego.html
 # https://www.cs.purdue.edu/people/faculty/apothen.html (Contains publications, with links)
 # https://www.cs.purdue.edu/people/faculty/apsomas.html (Blank page, only external links)
@@ -10,11 +10,21 @@
 from bs4 import BeautifulSoup
 import urllib.request
 
+html_page = None
+soup = None
+
+#Run whenever using a new site before running any other functions
+def getPageData(site):
+    global html_page, soup
+    html_page = urllib.request.urlopen(site)
+    soup = BeautifulSoup(html_page, features='lxml')
+    
+
 # Returns array of external links (personal webpage and research pages) from Professor's website
 # Can set logData to True to generate a txt file of links and indices found on the page
 def getExternalLinks(site, logData=False):
-    html_page = urllib.request.urlopen(site)
-    soup = BeautifulSoup(html_page, features='lxml')
+    # html_page = urllib.request.urlopen(site)
+    # soup = BeautifulSoup(html_page, features='lxml')
     rawLinks = soup.find_all('a', href=True)
     links = []
     jpgIndex = -1
@@ -39,7 +49,30 @@ def getExternalLinks(site, logData=False):
     
     return links[jpgIndex+1:footerIndex]
 
-getExternalLinks("https://www.cs.purdue.edu/people/faculty/mingyin.html", True)
+def getPublications():
+    soupText = str(soup.body)
+    startIndex = soupText.find("Selected Publications")
+    if(startIndex != -1):
+        startIndex += 50
+        endIndex = soupText.find("lastupdate")
+        endIndex -= 26
+    targetText = soupText[startIndex : endIndex]
+    
+    #Remove html tags from text
+    targetText = targetText[targetText.find(">")+1:targetText.rfind("</div>")+6]
+    targetText = targetText.replace("<em>", "")
+    targetText = targetText.replace("</em>", "")
+    targetText = targetText.replace("<strong>", "")
+    targetText = targetText.replace("</strong>", "")
+    targetText = targetText.replace("<p>", "")
+    targetText = targetText.replace("</p>", "")
+    return targetText
+    
+
+getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html")
+#getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html")
+#testSoup = getExternalLinks(True)
+print(getPublications())
 
 
 
