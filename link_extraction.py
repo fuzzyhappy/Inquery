@@ -69,10 +69,11 @@ def getPublications():
     targetText = targetText.replace("</p>", "")
     
     titleIndices = findInstancesOfString(targetText,'<div style="margin-bottom: 1em;">')
+    #print(targetText[titleIndices[1]:targetText.find("</div>",titleIndices[1])])
     
     rawTitleArray = [None] * len(titleIndices)
     for i in range(len(titleIndices)):
-        rawTitleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",i)]
+        rawTitleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])]
     
     
     return rawTitleArray
