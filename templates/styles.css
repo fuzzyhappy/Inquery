@@ -1,0 +1,26 @@
+body {
+  background-color: violet;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  color: cyan;
+  text-decoration: overline;
+}
+
+h1, h2 {
+  font-variant: small-caps;
+  font-family: sans-serif;
+}
+
+#page-title {
+  text-shadow: 5px 5px cyan;
+}
+
+.centered-h1 {
+   text-align: center;
+}
