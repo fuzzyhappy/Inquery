@@ -70,6 +70,15 @@ def getPublications():
         targetText = targetText.replace("</strong>", "")
         targetText = targetText.replace("<p>", "")
         targetText = targetText.replace("</p>", "")
+        targetText = targetText.replace("<i>", "")
+        targetText = targetText.replace("</i>", "")
+        targetText = targetText.replace("<u>", "")
+        targetText = targetText.replace("</u>", "")
+        targetText = targetText.replace("<ul>", "")
+        targetText = targetText.replace("</ul>", "")
+        targetText = targetText.replace("<br>", "")
+        targetText = targetText.replace("<br/>", "")
+        targetText = targetText.replace("&amp", "&")
         
         #Find indices where each publication title starts
         titleIndices = findInstancesOfString(targetText,'<div style="margin-bottom: 1em;">')
@@ -82,7 +91,7 @@ def getPublications():
         for i in range(len(titleIndices)):
             titleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])] #Narrow down to one entry
             titleArray[i] = titleArray[i][targetText.find(">"):] #Removes leading HTML tag
-            if(titleArray[i].find("href=") != -1): #If a link is found in the entry:
+            while (titleArray[i].find("href=") != -1): #If a link is found in the entry (some links appear twice):
                 linkStartIndex = titleArray[i].find('="')+2 #Find the indicies of the link
                 linkEndIndex = titleArray[i].find('">')
                 linkArray[i] = titleArray[i][linkStartIndex:linkEndIndex] #Save the link to array   
@@ -104,6 +113,7 @@ def findInstancesOfString(string, target):
 #getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html") #Just publications
 #getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html") #Publications and links
 #getPageData("https://www.cs.purdue.edu/people/faculty/dgleich.html") #No publications
+getPageData("https://www.cs.purdue.edu/people/faculty/akate.html")
 #testSoup = getExternalLinks(True)
 #print(getPublications())
-#result = getPublications()
+result = getPublications()
