@@ -1,22 +1,3 @@
-a {
-  color: white;
-  text-decoration: none;
-}
-
-a:hover {
-  color: cyan;
-  text-decoration: overline;
-}
-
-h1, h2 {
-  font-variant: small-caps;
-  font-family: sans-serif;
-}
-
-#page-title {
-  text-shadow: 5px 5px cyan;
-}
-
 .centered-h1 {
    text-align: center;
 }
@@ -35,14 +16,6 @@ body {
   border-radius: 40px;
   padding: 10px;
 
-}
-
-.searchBox:hover > .searchInput, .searchInput:focus {
-  width: 300px;
-}
-
-.searchBox:hover > .searchButton, .searchInput:focus + .searchButton {
-  opacity: 0;
 }
 
 .searchButton {
@@ -67,62 +40,5 @@ body {
   font-size: 16px;
   transition: 0.4s;
   line-height: 50px;
-  width: 0px;
+  width: 300px;
 }
-
-/* ol, li, span, h4 {
-  margin: 0;
-}
-
-ol {
-  counter-reset: section;
-}
-
-li { 
-  list-style-type: none;
-  position: relative;
-  font-size: 1.5rem;
-  padding: 15px;
-  margin-bottom: 15px;
-  background: #ce9909;
-  color: #fff;
-}
-
-h4 {
-  position: relative;
-  padding-bottom: 10px;
-}
-
-h4:after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 25px;
-  height: 2px;
-  background: white;
-}
-
-span {
-  font-size: .9rem; 
-  line-height: 1.4rem;
-  margin-top: 15px;
-}
-
-li::before {
-    counter-increment: section;
-    content: counter(section);
-    text-align: center;
-    display: inline-block;
-    color: #000;
-    border-radius: 50%;
-    position: absolute;
-    left: -65px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 12px;
-    font-size: 2rem;
-    width: 25px;
-    height: 25px;
-    border: 2px solid #000;
-} */
