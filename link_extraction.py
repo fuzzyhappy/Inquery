@@ -9,7 +9,7 @@
 
 from bs4 import BeautifulSoup
 import urllib.request
-import re
+from re import finditer
 
 html_page = None
 soup = None
@@ -42,12 +42,11 @@ def getExternalLinks(site, logData=False):
     if(logData):
         ## Write links to txt file with indices. Useful for debugging.
         print(links[jpgIndex+1:footerIndex]) #Prints returned values
-        with open("links_test.txt", "w") as f: #Logs all links found with indices
+        with open("links_test.txt", "w") as f: #Logs all links found with theier indices
             i = 0
             for line in links:
                 f.write(str(i) +" " + line + "\n")
                 i += 1;
-                
     
     return links[jpgIndex+1:footerIndex]
 
@@ -84,26 +83,22 @@ def getPublications():
             titleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])] #Narrow down to one entry
             titleArray[i] = titleArray[i][targetText.find(">"):] #Removes leading HTML tag
             if(titleArray[i].find("href=") != -1): #If a link is found in the entry:
-                linkStartIndex = titleArray[i].find('="')+2
+                linkStartIndex = titleArray[i].find('="')+2 #Find the indicies of the link
                 linkEndIndex = titleArray[i].find('">')
-                linkArray[i] = titleArray[i][linkStartIndex:linkEndIndex]    
-                titleArray[i] = titleArray[i][0:linkStartIndex-9] + titleArray[i][linkEndIndex+2:] #Removes
+                linkArray[i] = titleArray[i][linkStartIndex:linkEndIndex] #Save the link to array   
+                titleArray[i] = titleArray[i][0:linkStartIndex-9] + titleArray[i][linkEndIndex+2:] #Splices title to remove URL
+                #Removes HTML tag and newline symbol
                 titleArray[i] = titleArray[i].replace("</a>", "")
-                titleArray[i] = titleArray[i].replace("\n", " ")
+                titleArray[i] = titleArray[i].replace("\n", " ") 
             
     return [titleArray, linkArray]
 
 
 def findInstancesOfString(string, target):
     results = []
-    for match in re.finditer(target, string):
+    for match in finditer(target, string):
         results.append(match.start())
     return results
-
-def process(s):
-    s = " ".join(re.sub("([^0-9A-Za-z \t])|(\w+:\/\/\S+)", "", s).split())
-        
-    
 
 ## Misc debug lines
 #getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html") #Just publications
@@ -111,7 +106,4 @@ def process(s):
 #getPageData("https://www.cs.purdue.edu/people/faculty/dgleich.html") #No publications
 #testSoup = getExternalLinks(True)
 #print(getPublications())
-#result = getPublications()
-
-
-
+result = getPublications()
