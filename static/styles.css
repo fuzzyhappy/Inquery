@@ -51,3 +51,7 @@ img {
   line-height: 50px;
   width: 300px;
 }
+
+.hiddenlink {
+  visibility: hidden;
+}
