@@ -69,12 +69,12 @@ def uploadData(fullName, education, researchAreas, extLink, publications, bio):
 #currentRef.set(formatData("Purdue Pete", "Purdue University", ["Machine Learning", "Meme History"], "https://www.purdue.edu/"));
 
 ## Upload sample data
-uploadData("Tree Mann", ["Stanford University"], ["Computational Chemistry"], "https://en.wikipedia.org/wiki/Stanford_University", [["title1", "link1"], ["title2", "link2"], ["title3", "None"]], "Studies trees using computers...or something like that")
-uploadData("Purdue Pete", ["Purdue University"], ["Computational Chemistry", "Machine Learning", "Meme History"], "https://www.purdue.edu/", [["title1", "link1"], ["title2", "link2"], ["title3", "link3"]], "Studies Meme History")
-uploadData("Perdew Yeet", ["Purdue University"], ["Computational Chemistry"], "https://en.wikipedia.org/wiki/Purdue_University", [["title1", "link1"], ["title2", None], ["title3", "link3"]], "Purdue Pete's relative. Interest in Computational Chemistry")
-uploadData("Chuck Norris", ["Harvard University", "UC Berkeley"], ["Computational Chemistry", "Meme History", "Machine Learning"], "https://en.wikipedia.org/wiki/Chuck_Norris", [["title1", None], ["title2", None], ["title3", "link3"], ["title4", "link4"]], "Professor Norris' research focuses on machine learning")
-uploadData("Micheal Reeves", ["Cornell University", "UCLA"], ["Robotics", "Meme History", "Machine Learning", "Computational Chemistry"], "https://www.youtube.com/channel/UCtHaxi4GTYDpJgMSGy7AeSw", [["title1", "link1"], ["title2", None], ["title3", None], ["title4", None]], "Professor Reeves is interested in tasing people for views- I mean robotics")
-uploadData("Mark Zuckerberg", ["Harvard University"], ["Face Recognition", "Meme History", "Cybersecurity"], None, [["title1", "link1"], ["title2", "link2"], ["title3", None]], "Professor Zuckerberg leads research in facial recognition")
+#uploadData("Tree Mann", ["Stanford University"], ["Computational Chemistry"], "https://en.wikipedia.org/wiki/Stanford_University", [["title1", "link1"], ["title2", "link2"], ["title3", "None"]], "Studies trees using computers...or something like that")
+#uploadData("Purdue Pete", ["Purdue University"], ["Computational Chemistry", "Machine Learning", "Meme History"], "https://www.purdue.edu/", [["title1", "link1"], ["title2", "link2"], ["title3", "link3"]], "Studies Meme History")
+#uploadData("Perdew Yeet", ["Purdue University"], ["Computational Chemistry"], "https://en.wikipedia.org/wiki/Purdue_University", [["title1", "link1"], ["title2", None], ["title3", "link3"]], "Purdue Pete's relative. Interest in Computational Chemistry")
+#uploadData("Chuck Norris", ["Harvard University", "UC Berkeley"], ["Computational Chemistry", "Meme History", "Machine Learning"], "https://en.wikipedia.org/wiki/Chuck_Norris", [["title1", None], ["title2", None], ["title3", "link3"], ["title4", "link4"]], "Professor Norris' research focuses on machine learning")
+#uploadData("Micheal Reeves", ["Cornell University", "UCLA"], ["Robotics", "Meme History", "Machine Learning", "Computational Chemistry"], "https://www.youtube.com/channel/UCtHaxi4GTYDpJgMSGy7AeSw", [["title1", "link1"], ["title2", None], ["title3", None], ["title4", None]], "Professor Reeves is interested in tasing people for views- I mean robotics")
+#uploadData("Mark Zuckerberg", ["Harvard University"], ["Face Recognition", "Meme History", "Cybersecurity"], None, [["title1", "link1"], ["title2", "link2"], ["title3", None]], "Professor Zuckerberg leads research in facial recognition")
 
 
 #print(f'{literalSearch("Meme History")} => {literalSearch("Meme History").to_dict}')
