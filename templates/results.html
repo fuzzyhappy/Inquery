@@ -31,14 +31,19 @@
 
                 <b><span class='publications'> Publications: </span></b><br>
                 <ul>
-                    {% for i in range(data[name].pubTitles | length) %}        
-                        {% if data[name].pubLinks[i] == "" %}
-                            <li>{{ data[name].pubTitles[i] }}</li>
-                        {% else -%}
-                            <li><a href="{{ data[name].pubLinks[i] }}" target="_blank">{{ data[name].pubTitles[i] }}</a></li>
-                        {% endif %}                          
+                    {% for i in range(data[name].pubTitles | length) %}  
+                        {% if data[name].pubTitles[i] != "" %}      
+                            {% if data[name].pubLinks[i] == "" %}
+                                <li>{{ data[name].pubTitles[i] }}</li>
+                            {% else -%}
+                                <li><a href="{{ data[name].pubLinks[i] }}" target="_blank">{{ data[name].pubTitles[i] }}</a></li>
+                            {% endif %}        
+                        {% endif %}                  
                     {% endfor %} 
                 </ul>
+                {% if data[name].pubTitles[0] == "" %}
+                    <p>No publications</p>
+                {% endif %}
                 
                 <b><span class='externalLinks'> Website: </span></b><br>            
                 <ul>
