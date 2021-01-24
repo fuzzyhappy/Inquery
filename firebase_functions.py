@@ -4,7 +4,7 @@ from firebase_admin import credentials
 
 #Initalizes service account if one does not already exist
 try:
-    cred = credentials.Certificate('insert credentials filepath here')
+    cred = credentials.Certificate('/Users/shellyschwartz/PycharmProjects/boilerMake/BoilerMake8Build/boilermake-8-project-firebase-adminsdk-n45vg-c326d22181.json')
     firebase_admin.initialize_app(cred)
 except ValueError:
     pass
