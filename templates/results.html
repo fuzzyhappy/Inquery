@@ -15,17 +15,34 @@
               <polyline fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" points="
               11.4075,18.95 0.09375,9.52175 11.4075,0.09375 "/>
             </svg>  
-          </a>
-    {% for name in data %}
-          <div class="card card-1">
-            <h3>{{ data[name].fullName }}</h3>
-            <span class='education'> Education: {{ data[name].education }} </span><br>
-            <span class='publications'> Publications: {{ data[name].publications }} </span><br>
-            <span class='bio'> Bio: {{ data[name].bio }}</span><br>
-            <span class='externalLinks'> Links: <a href="{{ data[name].externalLinks }}" target="_blank">{{ data[name].externalLinks }}</a></span>
+        </a>
+        {% for name in data %}
+            <div class="card card-1">
+                <h3>{{ data[name].fullName }}</h3>
+                <span class='education'> Education: </span><br>
+                <ul>
+                {% for edu in data[name].education %}
+                    <li>{{edu}}</li>
+                {% endfor %} 
+                </ul>
 
-      </div>
-    {% endfor %} 
+                <span class='publications'> Publications: </span><br>
+                <ul>
+                    {% for pub in data[name].publications %}
+                        <li>{{ pub }}</li>
+                    {% endfor %} 
+                </ul>
+
+                <span class='bio'> Bio: {{ data[name].bio }}</span><br><br>
+                
+                <span class='externalLinks'> Links: </span><br>
+                <ul>
+                    {% for link in data[name].externalLinks %}
+                        <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
+                    {% endfor %} 
+                </ul>
+            </div>
+        {% endfor %} 
     </div>
 </body>
 </html>
