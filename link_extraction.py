@@ -52,8 +52,8 @@ def getExternalLinks(site, logData=False):
 
 #Returns publications as 2D array
 def getPublications():
-    titleArray = [None]
-    linkArray = [None]
+    titleArray = [""]
+    linkArray = [""]
     soupText = str(soup.body)
     startIndex = soupText.find("Selected Publications")
     if(startIndex != -1):
@@ -85,8 +85,8 @@ def getPublications():
         #print(targetText[titleIndices[1]:targetText.find("</div>",titleIndices[1])])
         
         #Resize each array
-        titleArray = [None] * len(titleIndices)
-        linkArray = [None] * len(titleIndices)
+        titleArray = [""] * len(titleIndices)
+        linkArray = [""] * len(titleIndices)
         
         for i in range(len(titleIndices)):
             titleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])] #Narrow down to one entry
