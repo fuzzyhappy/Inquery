@@ -19,6 +19,8 @@
         {% for name in data %}
             <div class="card card-1">
                 <h3>{{ data[name].fullName }}</h3>
+                <h4><span class='bio'>{{ data[name].bio }}</span></h4>
+
                 <b><span class='education'> Education: </span></b><br>
 
                 <ul>
@@ -32,11 +34,6 @@
                     {% for pub in data[name].pubTitles %}
                         <li>{{ pub }}</li>
                     {% endfor %} 
-                </ul>
-
-                <b><span class='bio'> Bio: </span></b><br>
-                <ul>
-                    <li>{{ data[name].bio }}</li>
                 </ul>
                 
                 <b><span class='externalLinks'> Link: </span></b><br>            
