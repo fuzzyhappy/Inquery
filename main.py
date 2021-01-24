@@ -6,6 +6,13 @@ import spacy
 from textblob import TextBlob
 from string import punctuation
 from itertools import chain
+
+from BoilerMake8Build import link_extraction as la
+
+from bs4 import BeautifulSoup
+import urllib.request
+from re import finditer
+
 import nltk
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
@@ -89,11 +96,8 @@ def get_research():
     return results
 
 def get_publications():
-    publications = soup.find_all('strong')
-    publications_list = []
-    for pub in publications:
-        publications_list.append(pub.text)
-    print(publications_list)
+    la.getPageData(url)
+    return la.getPublications()
 
 def get_website():
     soup = BeautifulSoup(url)
@@ -147,7 +151,8 @@ def make_data():
         if len(elem) > 5:
             parse_fin_list.append(elem)
     search_q = parse_fin_list
-    return name, bio, education, search_q
+    pub = get_publications()
+    return name, bio, education, search_q, pub
 
 
 import firebase_admin
@@ -221,7 +226,8 @@ def process(s):
   return s
 if __name__ == "__main__":
     url = ["https://www.cs.purdue.edu/people/faculty/spa.html"]
-    prof_l = ["https://www.cs.purdue.edu/people/faculty/ninghui.html","https://www.cs.purdue.edu/people/faculty/mingyin.html","https://www.cs.purdue.edu/people/faculty/dxu.html","https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/akate.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
+    prof_l = ["https://www.cs.purdue.edu/people/faculty/xmt.html","https://www.cs.purdue.edu/people/faculty/rompf.html","https://www.cs.purdue.edu/people/faculty/spaf.html","https://www.cs.purdue.edu/people/faculty/dkihara.html","https://www.cs.purdue.edu/people/faculty/rego.html","https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/dec.html","https://www.cs.purdue.edu/people/faculty/sbasu.html","https://www.cs.purdue.edu/people/faculty/neville.html","https://www.cs.purdue.edu/people/faculty/popescu.html","https://www.cs.purdue.edu/people/faculty/jblocki.html","https://www.cs.purdue.edu/people/faculty/chunyi.html","https://www.cs.purdue.edu/people/faculty/eps.html","https://www.cs.purdue.edu/people/faculty/yexiang.html","https://www.cs.purdue.edu/people/faculty/bendy.html","https://www.cs.purdue.edu/people/faculty/panli.html", "https://www.cs.purdue.edu/people/faculty/ninghui.html","https://www.cs.purdue.edu/people/faculty/mingyin.html","https://www.cs.purdue.edu/people/faculty/dxu.html","https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
+    print(len(prof_l))
     for url in prof_l:
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -232,6 +238,8 @@ if __name__ == "__main__":
         print(bio)
         edu = make_data()[2]
         search_q = make_data()[3]
+        pub = make_data()[4]
+        print(pub)
         n_l = []
         # for word in search_q:
         #     n_l.append(process(word))
