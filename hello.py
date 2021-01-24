@@ -43,7 +43,6 @@ def retrieve():
     docs = db.collection(u'profdata').stream()
     for doc in docs:
         if (u'researchArea' in doc.to_dict() and process(request.form[u'area']) in doc.to_dict()[u'researchArea']):
-            print(f'{doc.id} => {doc.to_dict()}')
             returnData[doc.id] = doc.to_dict()
     return redirect('/results')
 
