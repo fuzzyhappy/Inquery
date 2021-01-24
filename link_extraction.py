@@ -101,7 +101,8 @@ def getPublications():
                 titleArray[i] = titleArray[i].replace("\n", " ") 
             
     #return list(zip(titleArray, linkArray))
-    return [list(tup) for tup in zip(titleArray, linkArray)]
+    #return [list(tup) for tup in zip(titleArray, linkArray)]
+    return titleArray, linkArray
 
 
 # def cleanUpTitle(title):
@@ -115,9 +116,9 @@ def findInstancesOfString(string, target):
 
 ## Misc debug lines
 #getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html") #Just publications
-getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html") #Publications and links
+#getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html") #Publications and links
 #getPageData("https://www.cs.purdue.edu/people/faculty/dgleich.html") #No publications
 #getPageData("https://www.cs.purdue.edu/people/faculty/akate.html")
 #testSoup = getExternalLinks(True)
 #print(getPublications())
-result = getPublications()
+#result = getPublications()
