@@ -14,7 +14,8 @@ import re
 html_page = None
 soup = None
 
-#Run whenever using a new site before running any other functions
+#Must run whenever using a new site before running any other functions. 
+#Saves HTML code of site to a global variable
 def getPageData(site):
     global html_page, soup
     html_page = urllib.request.urlopen(site)
@@ -50,7 +51,7 @@ def getExternalLinks(site, logData=False):
     
     return links[jpgIndex+1:footerIndex]
 
-#Returns publications as a dictionary
+#Returns publications as 2D array
 def getPublications():
     titleArray = [None]
     linkArray = [None]
@@ -58,11 +59,11 @@ def getPublications():
     startIndex = soupText.find("Selected Publications")
     if(startIndex != -1):
         #startIndex += 50
-        endIndex = soupText.find("lastupdate")
+        endIndex = soupText.find("lastupdate") #Finds correct indices
         endIndex -= 26
         targetText = soupText[startIndex : endIndex]
         
-        #Remove html tags from text
+        #Remove various HTML tags from text
         targetText = targetText[targetText.find(">")+1:targetText.rfind("</div>")+6]
         targetText = targetText.replace("<em>", "")
         targetText = targetText.replace("</em>", "")
@@ -71,17 +72,24 @@ def getPublications():
         targetText = targetText.replace("<p>", "")
         targetText = targetText.replace("</p>", "")
         
+        #Find indices where each publication title starts
         titleIndices = findInstancesOfString(targetText,'<div style="margin-bottom: 1em;">')
         #print(targetText[titleIndices[1]:targetText.find("</div>",titleIndices[1])])
         
+        #Resize each array
         titleArray = [None] * len(titleIndices)
         linkArray = [None] * len(titleIndices)
         
         for i in range(len(titleIndices)):
-            titleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])]
+            titleArray[i] = targetText[titleIndices[i]:targetText.find("</div>",titleIndices[i])] #Narrow down to one entry
             titleArray[i] = titleArray[i][targetText.find(">"):] #Removes leading HTML tag
             if(titleArray[i].find("href=") != -1): #If a link is found in the entry:
-                linkArray[i] = titleArray[i][titleArray[i].find('="')+2:titleArray[i].find('">')]
+                linkStartIndex = titleArray[i].find('="')+2
+                linkEndIndex = titleArray[i].find('">')
+                linkArray[i] = titleArray[i][linkStartIndex:linkEndIndex]    
+                titleArray[i] = titleArray[i][0:linkStartIndex-9] + titleArray[i][linkEndIndex+2:] #Removes
+                titleArray[i] = titleArray[i].replace("</a>", "")
+                titleArray[i] = titleArray[i].replace("\n", " ")
             
     return [titleArray, linkArray]
 
@@ -91,6 +99,9 @@ def findInstancesOfString(string, target):
     for match in re.finditer(target, string):
         results.append(match.start())
     return results
+
+def process(s):
+    s = " ".join(re.sub("([^0-9A-Za-z \t])|(\w+:\/\/\S+)", "", s).split())
         
     
 
@@ -101,3 +112,6 @@ def findInstancesOfString(string, target):
 #testSoup = getExternalLinks(True)
 #print(getPublications())
 #result = getPublications()
+
+
+
