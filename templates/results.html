@@ -29,8 +29,12 @@
 
                 <b><span class='publications'> Publications: </span></b><br>
                 <ul>
-                    {% for pub in data[name].pubTitles %}
-                        <li>{{ pub }}</li>
+                    {% for i in range(data[name].pubTitles | length) %}        
+                        {% if data[name].pubLinks[i] == "" %}
+                            <li>{{ data[name].pubTitles[i] }}</li>
+                        {% else -%}
+                            <li><a href="{{ data[name].pubLinks[i] }}" target="_blank">{{ data[name].pubTitles[i] }}</a></li>
+                        {% endif %}                          
                     {% endfor %} 
                 </ul>
 
@@ -39,7 +43,7 @@
                     <li>{{ data[name].bio }}</li>
                 </ul>
                 
-                <b><span class='externalLinks'> Link: </span></b><br>            
+                <b><span class='externalLinks'> Website: </span></b><br>            
                 <ul>
                     <li><a href="{{data[name].externalLinks}}">{{data[name].externalLinks}}</a></li>
                 </ul>
