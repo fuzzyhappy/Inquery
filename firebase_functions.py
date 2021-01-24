@@ -4,7 +4,7 @@ from firebase_admin import credentials
 
 #Initalizes service account if one does not already exist
 try:
-    cred = credentials.Certificate('boilermake-8-project-firebase-adminsdk-n45vg-5fa05d5c83.json')
+    cred = credentials.Certificate('insert credentials filepath here')
     firebase_admin.initialize_app(cred)
 except ValueError:
     pass
@@ -33,16 +33,16 @@ db = firestore.client()
 # External link to website (if they have one)
 # Publications: [[title, link to publication], [title2, link2], [title3, None]]
 # Bio (in the form of a string)
-def uploadData(fullName, education, researchAreas, extLink, publications, bio):
+def uploadData(fullName, education, researchAreas, extLink, pubTitles, pubLinks, bio):
     currentRef = db.collection(u'profdata').document(u''+ fullName +'')
     
     #Converts 2D array of publications to dictionary
-    pubTitles = [None]*len(publications);
-    pubLinks = [None]*len(publications);
-    for i in range(len(publications)):
-        pubTitles[i] = publications[i][0];
-        pubLinks[i] = publications[i][1];
-    pubMap = dict(zip(pubTitles, pubLinks));
+    # pubTitles = [None]*len(publications);
+    # pubLinks = [None]*len(publications);
+    # for i in range(len(publications)):
+    #     pubTitles[i] = publications[i][0];
+    #     pubLinks[i] = publications[i][1];
+    # pubMap = dict(zip(pubTitles, pubLinks));
     #print(pubMap);
     
     info = {
@@ -50,7 +50,8 @@ def uploadData(fullName, education, researchAreas, extLink, publications, bio):
     u'education': education,
     u'researchArea': researchAreas,
     u'externalLinks': extLink,
-    u'publications': pubMap,
+    u'pubTitles': pubTitles,
+    u'pubLinks': pubLinks,
     u'bio': bio
     }
     #print(info);
