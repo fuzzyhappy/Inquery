@@ -19,27 +19,28 @@
         {% for name in data %}
             <div class="card card-1">
                 <h3>{{ data[name].fullName }}</h3>
-                <span class='education'> Education: </span><br>
+                <b><span class='education'> Education: </span></b><br>
                 <ul>
                 {% for edu in data[name].education %}
                     <li>{{edu}}</li>
                 {% endfor %} 
                 </ul>
 
-                <span class='publications'> Publications: </span><br>
+                <b><span class='publications'> Publications: </span></b><br>
                 <ul>
-                    {% for pub in data[name].publications %}
+                    {% for pub in data[name].pubTitles %}
                         <li>{{ pub }}</li>
                     {% endfor %} 
                 </ul>
 
-                <span class='bio'> Bio: {{ data[name].bio }}</span><br><br>
-                
-                <span class='externalLinks'> Links: </span><br>
+                <b><span class='bio'> Bio: </span></b><br>
                 <ul>
-                    {% for link in data[name].externalLinks %}
-                        <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
-                    {% endfor %} 
+                    <li>{{ data[name].bio }}</li>
+                </ul>
+                
+                <b><span class='externalLinks'> Link: </span></b><br>            
+                <ul>
+                    <li><a href="{{data[name].externalLinks}}">{{data[name].externalLinks}}</a></li>
                 </ul>
             </div>
         {% endfor %} 
