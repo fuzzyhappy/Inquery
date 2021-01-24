@@ -52,8 +52,8 @@ def getExternalLinks(site, logData=False):
 
 #Returns publications as 2D array
 def getPublications():
-    titleArray = [""]
-    linkArray = [""]
+    titleArray = [None]
+    linkArray = [None]
     soupText = str(soup.body)
     startIndex = soupText.find("Selected Publications")
     if(startIndex != -1):
@@ -100,8 +100,12 @@ def getPublications():
                 titleArray[i] = titleArray[i].replace("</a>", "")
                 titleArray[i] = titleArray[i].replace("\n", " ") 
             
-    return [titleArray, linkArray]
+    #return list(zip(titleArray, linkArray))
+    return [list(tup) for tup in zip(titleArray, linkArray)]
 
+
+# def cleanUpTitle(title):
+#     tags = findInstancesOfString(title, "<")
 
 def findInstancesOfString(string, target):
     results = []
@@ -111,9 +115,9 @@ def findInstancesOfString(string, target):
 
 ## Misc debug lines
 #getPageData("https://www.cs.purdue.edu/people/faculty/popescu.html") #Just publications
-#getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html") #Publications and links
+getPageData("https://www.cs.purdue.edu/people/faculty/apothen.html") #Publications and links
 #getPageData("https://www.cs.purdue.edu/people/faculty/dgleich.html") #No publications
-getPageData("https://www.cs.purdue.edu/people/faculty/akate.html")
+#getPageData("https://www.cs.purdue.edu/people/faculty/akate.html")
 #testSoup = getExternalLinks(True)
 #print(getPublications())
 result = getPublications()
