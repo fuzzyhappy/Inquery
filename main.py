@@ -8,7 +8,7 @@ from string import punctuation
 from itertools import chain
 
 from BoilerMake8Build import link_extraction as la
-
+from BoilerMake8Build import firebase_functions as ff
 from bs4 import BeautifulSoup
 import urllib.request
 from re import finditer
@@ -97,16 +97,13 @@ def get_research():
 
 def get_publications():
     la.getPageData(url)
-    return la.getPublications()
+    stuff = la.getPublications()
+    return stuff[0], stuff[1]
 
 def get_website():
-    soup = BeautifulSoup(url)
-    links = []
-
-    for link in soup.findAll('a', attrs={'href': re.compile("^http://")}):
-        links.append(link.get('href'))
-
-    return links
+    la.getPageData(url)
+    stuff = la.getExternalLinks()
+    return stuff
 
 def get_bio():
     page = soup.find_all('p')
@@ -191,28 +188,7 @@ db = firestore.client()
 # Research areas(in the form of a list)
 # External link to website (if they have one)
 # Publications: [[title, link to publication], [title2, link2], [title3]]
-def uploadData(fullName, bio, education, researchAreas, extLink, publications):
-    currentRef = db.collection(u'profdata').document(u'' + fullName + '')
 
-    # Converts 2D array of publications to dictionary
-    pubTitles = [None] * len(publications);
-    pubLinks = [None] * len(publications);
-    for i in range(len(publications)):
-        pubTitles[i] = publications[i][0];
-        pubLinks[i] = publications[i][1];
-    pubMap = dict(zip(pubTitles, pubLinks));
-    # print(pubMap);
-
-    info = {
-        u'fullName': fullName,
-        u'education': education,
-        u'bio': bio,
-        u'researchArea': researchAreas,
-        u'externalLinks': extLink,
-        u'publications': pubMap
-    }
-    # print(info);
-    currentRef.set(info);
 from nltk.stem import PorterStemmer
 import nltk
 def process(s):
@@ -227,7 +203,6 @@ def process(s):
 if __name__ == "__main__":
     url = ["https://www.cs.purdue.edu/people/faculty/spa.html"]
     prof_l = ["https://www.cs.purdue.edu/people/faculty/xmt.html","https://www.cs.purdue.edu/people/faculty/rompf.html","https://www.cs.purdue.edu/people/faculty/spaf.html","https://www.cs.purdue.edu/people/faculty/dkihara.html","https://www.cs.purdue.edu/people/faculty/rego.html","https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/dec.html","https://www.cs.purdue.edu/people/faculty/sbasu.html","https://www.cs.purdue.edu/people/faculty/neville.html","https://www.cs.purdue.edu/people/faculty/popescu.html","https://www.cs.purdue.edu/people/faculty/jblocki.html","https://www.cs.purdue.edu/people/faculty/chunyi.html","https://www.cs.purdue.edu/people/faculty/eps.html","https://www.cs.purdue.edu/people/faculty/yexiang.html","https://www.cs.purdue.edu/people/faculty/bendy.html","https://www.cs.purdue.edu/people/faculty/panli.html", "https://www.cs.purdue.edu/people/faculty/ninghui.html","https://www.cs.purdue.edu/people/faculty/mingyin.html","https://www.cs.purdue.edu/people/faculty/dxu.html","https://www.cs.purdue.edu/people/faculty/apothen.html", "https://www.cs.purdue.edu/people/faculty/pfonseca.html", "https://www.cs.purdue.edu/people/faculty/mja.html", "https://www.cs.purdue.edu/people/faculty/aref.html","https://www.cs.purdue.edu/people/faculty/pdrineas.html", "https://www.cs.purdue.edu/people/faculty/cmh.html","https://www.cs.purdue.edu/people/faculty/bxd.html","https://www.cs.purdue.edu/people/faculty/lintan.html","https://www.cs.purdue.edu/people/faculty/xyzhang.html","https://www.cs.purdue.edu/people/faculty/yunglu.html","https://www.cs.purdue.edu/people/faculty/clifton.html","https://www.cs.purdue.edu/people/faculty/fahmy.html"]
-    print(len(prof_l))
     for url in prof_l:
         page = requests.get(url)
         soup = BeautifulSoup(page.content, 'html.parser')
@@ -235,13 +210,13 @@ if __name__ == "__main__":
         # name, bio, education, search_q
         name = make_data()[0]
         bio = make_data()[1]
-        print(bio)
         edu = make_data()[2]
         search_q = make_data()[3]
-        pub = make_data()[4]
-        print(pub)
+        art = make_data()[4][0]
+        link = make_data()[4][1]
         n_l = []
-        # for word in search_q:
-        #     n_l.append(process(word))
+        for word in search_q:
+            n_l.append(process(word))
+        ff.uploadData(name, edu, n_l, get_website()[0], art, link, bio)
         # uploadData(name, bio, edu, n_l, [], [])
 

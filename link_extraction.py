@@ -24,7 +24,7 @@ def getPageData(site):
 
 # Returns array of external links (personal webpage and research pages) from Professor's website
 # Can set logData to True to generate a txt file of links and indices found on the page
-def getExternalLinks(site, logData=False):
+def getExternalLinks(logData=False):
     # html_page = urllib.request.urlopen(site)
     # soup = BeautifulSoup(html_page, features='lxml')
     rawLinks = soup.find_all('a', href=True)
