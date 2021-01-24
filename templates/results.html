@@ -2,7 +2,7 @@
 <html>
   <head>
       <title>Search Results</title>
-      <link href="static/results_styles.css?v=1.0.2-test2" rel="stylesheet" type="text/css"/>
+      <link href="static/results_styles.css" rel="stylesheet" type="text/css"/>
   </head>
 
 <body>
@@ -19,6 +19,9 @@
         {% for name in data %}
             <div class="card card-1">
                 <h3>{{ data[name].fullName }}</h3>
+
+                <span class='bio'> {{ data[name].bio }}</span><br><br>
+
                 <span class='education'> Education: </span><br>
                 <ul>
                 {% for edu in data[name].education %}
@@ -32,8 +35,6 @@
                         <li>{{ pub }}</li>
                     {% endfor %} 
                 </ul>
-
-                <span class='bio'> Bio: {{ data[name].bio }}</span><br><br>
                 
                 <span class='externalLinks'> Links: </span><br>
                 <ul>
