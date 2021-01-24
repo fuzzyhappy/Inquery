@@ -106,4 +106,4 @@ def findInstancesOfString(string, target):
 #getPageData("https://www.cs.purdue.edu/people/faculty/dgleich.html") #No publications
 #testSoup = getExternalLinks(True)
 #print(getPublications())
-result = getPublications()
+#result = getPublications()
