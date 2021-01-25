@@ -130,4 +130,4 @@ dmypy.json
 .pyre/
 
 # Firebase admin auth
-boilermake-8-project-firebase-adminsdk/
+boilermake-8-project-firebase-adminsdk*
